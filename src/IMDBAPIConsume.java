@@ -1,15 +1,13 @@
 import java.net.URI;
-import java.net.URISyntaxException;
 import java.net.http.HttpClient;
 import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
 import java.time.Duration;
-import java.util.concurrent.ExecutionException;
 
 import static java.time.temporal.ChronoUnit.SECONDS;
 
 public class IMDBAPIConsume {
-    public static void main(String[] args) throws URISyntaxException, ExecutionException, InterruptedException {
+    public static void main(String[] args) {
 
         HttpRequest request = HttpRequest.newBuilder()
                 .uri(URI.create("https://imdb-api.com/en/API/Top250Movies/k_mscclnj7"))
@@ -18,11 +16,11 @@ public class IMDBAPIConsume {
                 .GET()
                 .build();
 
-        HttpResponse<String> response = HttpClient.newBuilder()
+        HttpClient.newBuilder()
                 .build()
                 .sendAsync(request, HttpResponse.BodyHandlers.ofString())
-                .get();
-
-        System.out.println(response.body());
+                .thenApply(HttpResponse::body)
+                .thenAccept(System.out::println)
+                .join();
     }
 }
