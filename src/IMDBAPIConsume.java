@@ -3,6 +3,8 @@ import java.net.http.HttpClient;
 import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
 import java.time.Duration;
+import java.util.Arrays;
+import java.util.List;
 
 import static java.time.temporal.ChronoUnit.SECONDS;
 
@@ -16,11 +18,19 @@ public class IMDBAPIConsume {
                 .GET()
                 .build();
 
-        HttpClient.newBuilder()
+        String jsonDividido = HttpClient.newBuilder()
                 .build()
                 .sendAsync(request, HttpResponse.BodyHandlers.ofString())
                 .thenApply(HttpResponse::body)
-                .thenAccept(System.out::println)
                 .join();
+
+        String replaceString = jsonDividido.replaceAll("\\[|\\]", "");
+        String moreReplaced = replaceString.replaceAll("\\{\"items\":|,\"errorMessage\":\"\"}", "");
+
+        //System.out.println(moreReplaced);
+
+        Arrays.stream(moreReplaced.split("[{}]")).toList().forEach(System.out::println);
+
+
     }
 }
